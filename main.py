@@ -19,4 +19,7 @@ else:
     exit()
 
 driver = zhijiao.Zjy(header, cookie)
-driver.getTopicList("应急救护技术")
+# for i in driver.getProcess("应急救护技术"):
+#     print(driver.getTopicList("应急救护技术", i['id']))
+# driver.test()
+driver.getCellInfo("应急救护技术","eqv8ackrf5jlefgzmxes7w","eqv8ackra5toesdqjetpa")

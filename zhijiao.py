@@ -39,18 +39,18 @@ class Zjy:
             result[course_name]['moduleId'] = ""
         self.course_list = result
         return result
-    def getTopicList(self,course_name):
+
+    def getTopicList(self, course_name, moduleId):
         url = "https://zjy2.icve.com.cn/api/study/process/getTopicByModuleId"
         if not self.course_list:
             self.getCourseList()
-        if self.course_list[course_name]['moduleId'] == "":
-            self.getProcess(course_name)
         data = {
             "courseOpenId": self.course_list[course_name]['courseOpenId'],
-            "moduleId":self.course_list[course_name]['moduleId']
+            "moduleId": moduleId
         }
         response = self.requestResult(url, data)
         return response['topicList']
+
     def getClassList(self, course_name):
         url = "https://zjy2.icve.com.cn/api/common/courseLoad/getStuStudyClassList"
         if not self.course_list:
@@ -75,10 +75,44 @@ class Zjy:
         result = list()
         for i in temp_data:
             result.append(i)
-        result.append(all_process)
-        self.course_list[course_name]['moduleId'] =  response['progress']['moduleId']
         return result
+
+    def getCellList(self, course_name, topic_id):
+        if not self.course_list:
+            self.getCourseList()
+        url = "https://zjy2.icve.com.cn/api/study/process/getCellByTopicId"
+        data = {
+            "courseOpenId": self.course_list[course_name]["courseOpenId"],
+            "openClassId": self.course_list[course_name]["openClassId"],
+            "topicId": topic_id
+        }
+        response = self.requestResult(url, data)
+        return response['cellList']
+
+    def getCellInfo(self, course_name, module_id, cell_id):
+        if not self.course_list:
+            self.getCourseList()
+        url = "https://zjy2.icve.com.cn/api/common/Directory/viewDirectory"
+        data = {
+            "courseOpenId": self.course_list[course_name]["courseOpenId"],
+            "openClassId": self.course_list[course_name]["openClassId"],
+            "cellId": cell_id,
+            "moduleId": module_id
+        }
+        response = self.requestResult(url, data)
+        #cellId 和 cellLogId 都在
+        return response
 
     def requestResult(self, url, data):
         response = requests.post(url, headers=self.header, data=data)
         return response.json()
+
+    def test(self):
+        url = "https://zjy2.icve.com.cn/api/common/Directory/viewDirectory"
+        data = {
+            "courseOpenId": "4ov5ackr05fo5cxjfv82dg",
+            "openClassId": "nm4aawv65dpvrgorr3kgq",
+            "cellId": "eqv8ackra5toesdqjetpa",
+            "moduleId": "eqv8ackrf5jlefgzmxes7w"
+        }
+        print(self.requestResult(url, data))
