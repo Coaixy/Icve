@@ -36,8 +36,31 @@ class Zjy:
             result[course_name]['courseOpenId'] = data[i]['courseOpenId']
             result[course_name]['openClassId'] = data[i]['openClassId']
             result[course_name]['process'] = data[i]['process']
+            result[course_name]['moduleId'] = ""
         self.course_list = result
         return result
+    def getTopicList(self,course_name):
+        url = "https://zjy2.icve.com.cn/api/study/process/getTopicByModuleId"
+        if not self.course_list:
+            self.getCourseList()
+        if self.course_list[course_name]['moduleId'] == "":
+            self.getProcess(course_name)
+        data = {
+            "courseOpenId": self.course_list[course_name]['courseOpenId'],
+            "moduleId":self.course_list[course_name]['moduleId']
+        }
+        response = self.requestResult(url, data)
+        return response['topicList']
+    def getClassList(self, course_name):
+        url = "https://zjy2.icve.com.cn/api/common/courseLoad/getStuStudyClassList"
+        if not self.course_list:
+            self.getCourseList()
+        data = {
+            "courseOpenId": self.course_list[course_name]['courseOpenId'],
+            "openClassId": self.course_list[course_name]['openClassId']
+        }
+        response = self.requestResult(url, data)
+        return response
 
     def getProcess(self, course_name):
         if not self.course_list:
@@ -53,8 +76,8 @@ class Zjy:
         for i in temp_data:
             result.append(i)
         result.append(all_process)
+        self.course_list[course_name]['moduleId'] =  response['progress']['moduleId']
         return result
-
 
     def requestResult(self, url, data):
         response = requests.post(url, headers=self.header, data=data)
