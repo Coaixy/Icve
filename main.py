@@ -69,6 +69,8 @@ for i in process_list:
                     cell_type = cell_info['categoryName']
                     residue_long = audio_video_long - study_newly_time
                     if cell_type == "视频":
+                        send(course_name, cell_id, cell_log_id, token, study_newly_time, 0)  # 发个包让他认识一下
+                        time.sleep(5)
                         if audio_video_long < 10 or residue_long < 10:  # 长度小于十
                             time.sleep(10)
                             send(course_name, cell_id, cell_log_id, token, audio_video_long, 0)
@@ -76,9 +78,11 @@ for i in process_list:
                             length = int(residue_long / 10) + 1
                             count = 1
                             while count != length:
-                                send_time = audio_video_long + 10 * count
-                                response = send(course_name, cell_id, cell_log_id, token, audio_video_long, 0)
-                                if response['code'] == 1:
+                                send_time = study_newly_time + 10 * count
+                                if send_time >= audio_video_long:  # 过长
+                                    send(course_name, cell_id, cell_log_id, token, audio_video_long, 0)
+                                response = send(course_name, cell_id, cell_log_id, token, send_time, 0)
+                                if response[1]['code'] == 1:
                                     count = count + 1
                                     print("当前进度：" + str(send_time) + "/" + str(audio_video_long))
                                 else:
@@ -89,17 +93,20 @@ for i in process_list:
                         start = 1
                         if study_newly_pic != 0:
                             start = study_newly_pic
+                        # print(start)
                         if page_count - start > 0:
-                            for l in range(page_count - start):
+                            for l in range(page_count - start + 1):
                                 response = send(course_name, cell_id, cell_log_id, token, 0, start)
-                                if response['code'] == 1:
-                                    start = start + 1
+                                if response[1]['code'] == 1:
                                     print("当前进度：" + str(start) + "/" + str(page_count))
+                                    start = start + 1
                                 else:
                                     print(response)
                                 time.sleep(10)
                     print("ℹ️已完成：" + i['name'] + "👉" + j['name'] + "👉" + k['cellName'])
             else:
-                print(driver.change(course_name, cell_info['currModuleId'], cell_info['curCellId'], cell_info['currCellName']))
+                print(driver.change(course_name, cell_info['currModuleId'], cell_info['curCellId'],
+                                    cell_info['currCellName']))
                 print("请重新开始")
                 exit()
+            # time.sleep(3)

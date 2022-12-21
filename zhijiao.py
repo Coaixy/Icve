@@ -131,7 +131,7 @@ class Zjy:
             "token": token
         }
         response = self.requestResult(url, data)
-        return response
+        return [data,response]
 
     def requestResult(self, url, data):
         response = requests.post(url, headers=self.header, data=data)
