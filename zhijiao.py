@@ -89,6 +89,20 @@ class Zjy:
         response = self.requestResult(url, data)
         return response['cellList']
 
+    def change(self, course_name, module_id, cell_id,cell_name):
+        if not self.course_list:
+            self.getCourseList()
+        url = "https://zjy2.icve.com.cn/api/study/process/getCellByTopicId"
+        data = {
+            "courseOpenId": self.course_list[course_name]["courseOpenId"],
+            "openClassId": self.course_list[course_name]["openClassId"],
+            "moduleId": module_id,
+            "cellId": cell_id,
+            "cellName": cell_name
+        }
+        response = self.requestResult(url, data)
+        return response
+
     def getCellInfo(self, course_name, module_id, cell_id):
         if not self.course_list:
             self.getCourseList()
@@ -100,7 +114,23 @@ class Zjy:
             "moduleId": module_id
         }
         response = self.requestResult(url, data)
-        #cellId 和 cellLogId 都在
+        # cellId 和 cellLogId 都在
+        return response
+
+    def sendProcess(self, course_name, cell_id, cell_log_id, token, time, num):
+        if not self.course_list:
+            self.getCourseList()
+        url = "https://zjy2.icve.com.cn/api/common/Directory/stuProcessCellLog"
+        data = {
+            "courseOpenId": self.course_list[course_name]["courseOpenId"],
+            "openClassId": self.course_list[course_name]["openClassId"],
+            "cellId": cell_id,
+            "cellLogId": cell_log_id,
+            "studyNewlyTime": time,
+            "studyNewlyPicNum": num,
+            "token": token
+        }
+        response = self.requestResult(url, data)
         return response
 
     def requestResult(self, url, data):
