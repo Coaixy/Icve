@@ -116,7 +116,7 @@ for i in process_list:
                         token = cell_info['guIdToken']
                         cell_type = cell_info['categoryName']
                         residue_long = audio_video_long - study_newly_time
-                        print(l['cellName'])
+                        print(k['cellName'])
                         if cell_type == "视频":
                             send(course_name, cell_id, cell_log_id, token, study_newly_time, 0)  # 发个包让他认识一下
                             time.sleep(5)
