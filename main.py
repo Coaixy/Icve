@@ -153,6 +153,6 @@ for i in process_list:
                                     time.sleep(10)
                 else:
                     print(cell_info)
-                    print("请更新课程")
+                    driver.change()
                     exit()
                 time.sleep(1)
