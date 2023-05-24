@@ -92,7 +92,7 @@ class Zjy:
     def change(self, course_name, module_id, cell_id,cell_name):
         if not self.course_list:
             self.getCourseList()
-        url = "https://zjy2.icve.com.cn/api/study/process/getCellByTopicId"
+        url = "https://zjy2.icve.com.cn/api/common/Directory/changeStuStudyProcessCellData"
         data = {
             "courseOpenId": self.course_list[course_name]["courseOpenId"],
             "openClassId": self.course_list[course_name]["openClassId"],
